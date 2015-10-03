@@ -80,8 +80,8 @@ hi clear SpellBad
 hi SpellBad cterm=underline
 
 " Spaces and Tabs:
-set shiftwidth=4
-set tabstop=4
+set shiftwidth=2
+set tabstop=2
 set expandtab
 set list " Show tabs to not ever have them
 set nojoinspaces " Disable double spaces on Join
@@ -100,7 +100,6 @@ set cc=100 " Highlight Column 100
 set cursorline
 set cursorcolumn
 " Set cursor colors:
-hi CursorLine cterm=NONE ctermbg=darkmagenta guibg=darkred
 hi CursorColumn cterm=NONE ctermbg=darkmagenta guibg=darkred
 
 filetype plugin indent on
