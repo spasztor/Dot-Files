@@ -107,7 +107,8 @@ set wildmenu
 set showmatch
 set ruler
 
-" Search:
+" Search
+autocmd CursorMoved * exe printf('match IncSearch /\V\<%s\>/', escape(expand('<cword>'), '/\'))
 set incsearch
 set hlsearch
 nnoremap <leader><space> :nohlsearch<CR>
