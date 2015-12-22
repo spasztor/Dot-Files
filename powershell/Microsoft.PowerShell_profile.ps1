@@ -9,10 +9,14 @@ Function Edit-Profile
 }
 
 # For editing your Vim settings
-Set-Variable VIMRC $home\_Vimrc
 Function Edit-Vimrc
 {
-    vim $home\_vimrc
+    vim ~/.vimrc
+}
+# For creating symbolic links
+Function mklink
+{
+  runas /noprofile /user:Administrator cmd /c mklink $args
 }
 
 # Strange magical environment variables to get vim working properly.
