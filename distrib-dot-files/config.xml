@@ -1,0 +1,49 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<config_file>
+  <dot_type name = "vim"
+            os_supported = "win" "linux"
+            src = "vim">
+    <dest>
+      <linux>".vim"</linux>
+      <win>"vimfiles"</win>
+    </dest>
+  </dot_type>
+
+  <dot_type name = "powershell"
+            os_supported = "win"
+            src = "powershell">
+    <dest>
+      <win>"Documents/WindowsPowerShell"</win>
+    </dest>
+  </dot_type>
+
+  <dot_file path =".vimrc"
+            type = "vim"
+            symlnk = true>
+  </dot_file>
+
+  <dot_file path = "colors/molokai.vim"
+            type = "vim"
+            symlnk = true>
+  </dot_file>
+
+  <dot_file path = "/doc/autolisp-help.txt"
+            type = "vim"
+            symlnk = true>
+  </dot_file>
+
+  <dot_file path = "plugin/rainbow.vim"
+            type = "vim"
+            symlnk = true>
+  </dot_file>
+
+  <dot_file path = "syntax/lisp.vim"
+            type = "vim"
+            symlnk = true>
+  </dot_file>
+
+  <dot_file path = "Microsoft.PowerShell_profile.ps1"
+            type = "powershell"
+            symlnk = true>
+  </dot_file>
+</config_file>
