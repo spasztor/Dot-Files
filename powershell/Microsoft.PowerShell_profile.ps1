@@ -30,7 +30,7 @@ $env:gvim = "C:\Program Files (x86)\Vim\vim74"
 $env:path += ";" + (Get-Item "Env:ProgramFiles(x86)").Value + "\Git\bin"
 
 # Load posh-git example profile:
-. "C:\Users\Szabi\Documents\WindowsPowerShell\Modules\posh-git\profile.example.ps1"
+. "$HOME\Documents\WindowsPowerShell\Modules\posh-git\profile.example.ps1"
 
 # Script for longer history in shell:
 $HistoryFilePath = Join-Path ([Environment]::GetFolderPath('UserProfile')) .ps_history
