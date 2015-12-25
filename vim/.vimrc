@@ -102,7 +102,8 @@ set cursorline
 set cursorcolumn
 " Set cursor colors:
 hi CursorColumn cterm=NONE ctermbg=darkmagenta guibg=darkred
-hi CursorLine cterm=NONE ctermbg=darkmagenta
+hi CursorLine cterm=NONE ctermbg=darkmagenta 
+hi CursorLine term=bold cterm=bold guibg=Grey40
 
 filetype plugin indent on
 set wildmenu
@@ -118,7 +119,12 @@ nnoremap <leader><space> :nohlsearch<CR>
 nnoremap <silent> <C-l> :nohl<CR><C-l>
 
 " Help:
-helptags $home/vimfiles/doc
+if s:running_windows 
+    helptags $home/vimfiles/doc
+else
+    helptags ~/.vim/doc
+endif
+
 map <leader>hh :he <C-R><C-W><CR>
 
 " Movement:

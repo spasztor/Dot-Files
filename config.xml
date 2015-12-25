@@ -21,8 +21,8 @@
             type = "custom"
             symlnk = "true">
     <dest>
-      <Linux>.vim</Linux>
-      <Windows>.vimrc</Windows>
+      <Linux>.vimrc</Linux>
+      <Windows>_vimrc</Windows>
     </dest>
   </dot_file>
 

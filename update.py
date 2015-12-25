@@ -42,12 +42,12 @@ def main_driver():
                 dest = os.path.join(os.environ['HOME'],
                                     dot_type.find('dest').find(platform.system()).text,
                                     dot_file.get('path'))
-                src = os.path.join(os.path.dirname(__file__), "..", dot_type.get('src'),
+                src = os.path.join(os.path.dirname(__file__), dot_type.get('src'),
                                    dot_file.get('path'))
             else:
                 dest = os.path.join(os.environ['HOME'],
                                     dot_file.find('dest').find(platform.system()).text)
-                src = os.path.join(os.path.dirname(__file__), "..", dot_file.get('path'))
+                src = os.path.join(os.path.dirname(__file__), dot_file.get('path'))
 
             if os.path.isfile(src) == False:
                 raise Exception("Source file " + src + " not found. Error in XML file.")
@@ -58,11 +58,11 @@ def main_driver():
                 if dot_file.get('symlnk') == "true" and platform.system() is "Windows":
                     shutil.copyfile(src, dest) # fuck this makes me sad.
                 else:
-                        os.symlink(src, dest)
+                    os.symlink(src, dest)
             else:
                 shutil.copyfile(src, dest)
         else:
-          raise Exception("OS not Supported.")
+          print("OS not Supported for file: " + src)
 
 try:
     main_driver()
