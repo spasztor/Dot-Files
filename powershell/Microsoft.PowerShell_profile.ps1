@@ -53,16 +53,15 @@ Import-Module "$MODULES\Jump.Location\Jump.Location.psd1"
 # For updating Dot-Files
 Function Update-DotFiles
 {
-    write-host "Updating Powershell Dot-Files...`n"
+    write-host "Updating Powershell Dot-Files..."
     python "$DOTFILES\update.py"
-    write-host "`nDot-Files Updated."
 }
 
 # For updating Dot-Files repo
 Function Update-DotFilesRepo
 {
   $repo_update = Read-Host "Update dot-files github repo? (y/n): "
-  if ($repo_update = "y") {
+  if ($repo_update -eq "y") {
     pushd $DOTFILES
     git add -A
     git commit -m "Automated push."
