@@ -61,12 +61,18 @@ Function Update-DotFiles
 Function Update-DotFilesRepo($message = "Automatic update from PS script.")
 {
   pushd $DOTFILES
-  $repo_update = Read-Host "Update dot-files github repo? (y/n): "
-  git status
-  if ($repo_update -eq "y") {
+  if ((Read-Host "Update dot-files github repo? (y/n)") -eq "y") {
     git add -A
+    if ((Read-Host "Use default message? (y/n)") -eq "n")
+    {
+      $message = read-host "Message: "
+    }
     git commit -m $message
     git push
+  }
+  else
+  {
+    git status
   }
   popd
 }
