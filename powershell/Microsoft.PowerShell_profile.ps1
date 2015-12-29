@@ -2,6 +2,15 @@
 Set-Alias vim "C:\Program Files (x86)\Vim\vim74\vim.exe"
 Set-Alias gvim "C:\Program Files (x86)\Vim\vim74\gvim.exe"
 
+# Machine specific settings:
+switch ($env:ComputerName)
+{
+  "JJACO-01797" {
+    write-host "Profile for $env:ComputerName found."
+    $WORK="K:\common\Szabolcs_Pasztor\Programming"
+  }
+  default {}
+}
 # For editing your PowerShell profile
 Function Edit-Profile
 {
