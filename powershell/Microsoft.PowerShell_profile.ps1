@@ -77,10 +77,16 @@ Function Update-DotFiles
 Function Update-DotFilesRepo
 {
   pushd $DOTFILES
+  Restart-sshagent
   git add -A
   git commit -m "Automated push."
   git push
   popd
+}
+
+Function Test-Foo
+{
+  write-host "It worked!"
 }
 # For editing your PowerShell profile
 Function Edit-Profile
@@ -88,6 +94,7 @@ Function Edit-Profile
     vim "$DOTFILES\powershell\Microsoft.PowerShell_profile.ps1"
     Update-DotFilesRepo
     Update-Dotfiles
+    Reload-Profile
     #."$PSCONFIG_DIR\Microsoft.Powershell_profile.ps1"
 }
 
@@ -97,11 +104,20 @@ Function Edit-Vimrc
     vim "$DOTFILES\vim\.vimrc"
     Update-DotFilesRepo
     Update-Dotfiles
-    #."$PSCONFIG_DIR\Microsoft.Powershell_profile.ps1"
 }
+
+# -------------------------------------------------------------------
+# Other helper functions:
+# -------------------------------------------------------------------
 
 # For creating symbolic links
 Function mklink
 {
   runas /noprofile /user:Administrator cmd /c mklink $args
+}
+
+Function Restart-sshagent
+{
+  stop-sshagent
+  start-sshagent
 }
