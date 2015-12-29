@@ -60,14 +60,15 @@ Function Update-DotFiles
 # For updating Dot-Files repo
 Function Update-DotFilesRepo
 {
+  pushd $DOTFILES
   $repo_update = Read-Host "Update dot-files github repo? (y/n): "
+  git status
   if ($repo_update -eq "y") {
-    pushd $DOTFILES
     git add -A
     git commit -m "Automated push."
     git push
-    popd
   }
+  popd
 }
 
 Function Test-Foo
