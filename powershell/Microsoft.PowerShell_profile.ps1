@@ -77,7 +77,6 @@ Function Update-DotFiles
 Function Update-DotFilesRepo
 {
   pushd $DOTFILES
-  Restart-sshagent
   git add -A
   git commit -m "Automated push."
   git push
@@ -94,7 +93,7 @@ Function Edit-Profile
     vim "$DOTFILES\powershell\Microsoft.PowerShell_profile.ps1"
     Update-DotFilesRepo
     Update-Dotfiles
-    Reload-Profile
+    write-host "Profile edit succesful. Please run Reload-Profile."
 }
 
 # For editing your Vim settings
