@@ -2,7 +2,7 @@
 Set-Alias vim "C:\Program Files (x86)\Vim\vim74\vim.exe"
 Set-Alias gvim "C:\Program Files (x86)\Vim\vim74\gvim.exe"
 
-# Machine specific settings:
+# Configure environment variables:
 switch ($env:ComputerName)
 {
   "JJACO-01797" {
@@ -14,6 +14,8 @@ switch ($env:ComputerName)
   write-host "Profile for $env:ComputerName was not found. Please configure for specific settings."
   }
 }
+$PSCONFIG_DIR="$HOME\Documents\WindowsPowershell"
+$MODULES="$PSCONFIG_DIR\Modules"
 
 # -------------------------------------------------------------------
 # Powershell Plugins:
@@ -28,7 +30,6 @@ $env:gvim = "C:\Program Files (x86)\Vim\vim74"
 
 # For getting posh-git & ssh-agent to work:
 $env:path += ";" + (Get-Item "Env:ProgramFiles(x86)").Value + "\Git\bin"
-$MODULES="$HOME\Documents\WindowsPowershell\Modules"
 
 # Load posh-git example profile:
 . "$MODULES\posh-git\profile.example.ps1"
@@ -49,12 +50,26 @@ Import-Module "$MODULES\Jump.Location\Jump.Location.psd1"
 # Profile editing functions:
 # -------------------------------------------------------------------
 
+# For reloading profile (from http://stackoverflow.com/a/5501909)
+Function Reload-Profile {
+      @(
+        $Profile.AllUsersAllHosts,
+        $Profile.AllUsersCurrentHost,
+        $Profile.CurrentUserAllHosts,
+        $Profile.CurrentUserCurrentHost
+      ) | % {
+          if(Test-Path $_){
+              Write-Verbose "Running $_"
+              . $_
+          }
+      }
+}
+
 # For updating Dot-Files
 Function Update-DotFiles
 {
     write-host "Updating Powershell Dot-Files...`n"
     python "$DOTFILES\update.py"
-    . $PROFILE
     write-host "`nDot-Files Updated."
 }
 
@@ -65,23 +80,26 @@ Function Update-DotFilesRepo
   git add -A
   git commit -m "Automated push."
   git push
-  pulld
+  popd
 }
 # For editing your PowerShell profile
 Function Edit-Profile
 {
     vim "$DOTFILES\powershell\Microsoft.PowerShell_profile.ps1"
-    # Update-DotFilesRepo
+    Update-DotFilesRepo
     Update-Dotfiles
+    #."$PSCONFIG_DIR\Microsoft.Powershell_profile.ps1"
 }
 
 # For editing your Vim settings
 Function Edit-Vimrc
 {
     vim "$DOTFILES\vim\.vimrc"
-    # Update-DotFilesRepo
+    Update-DotFilesRepo
     Update-Dotfiles
+    #."$PSCONFIG_DIR\Microsoft.Powershell_profile.ps1"
 }
+
 # For creating symbolic links
 Function mklink
 {
