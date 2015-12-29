@@ -58,28 +58,24 @@ Function Update-DotFiles
 }
 
 # For updating Dot-Files repo
-Function Update-DotFilesRepo
+Function Update-DotFilesRepo($message = "Automatic update from PS script.")
 {
   pushd $DOTFILES
   $repo_update = Read-Host "Update dot-files github repo? (y/n): "
   git status
   if ($repo_update -eq "y") {
     git add -A
-    git commit -m "Automated push."
+    git commit -m $message
     git push
   }
   popd
 }
 
-Function Test-Foo
-{
-  write-host "It worked the second time!"
-}
 # For editing your PowerShell profile
 Function Edit-Profile
 {
     vim "$DOTFILES\powershell\Microsoft.PowerShell_profile.ps1"
-    Update-DotFilesRepo
+    Update-DotFilesRepo("Automatic update of PS profile.")
     Update-Dotfiles
     write-host "Profile edit successful. Please reload profile."
 }
@@ -88,7 +84,7 @@ Function Edit-Profile
 Function Edit-Vimrc
 {
     vim "$DOTFILES\vim\.vimrc"
-    Update-DotFilesRepo
+    Update-DotFilesRepo("Automatic update of .VIMRC.")
     Update-Dotfiles
 }
 
