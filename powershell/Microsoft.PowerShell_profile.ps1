@@ -10,7 +10,12 @@
 #>
 
 # First line of configuration:
-write-host "`nLoading profile..."
+write-host @'
+-----------------------------------------------------------
+Just another powershell profile that sets a bunch of stuff.
+By: Szabolcs Pasztor, <szabolcs1992@gmail.com>
+-----------------------------------------------------------
+'@
 
 # Aliases for vim.
 Set-Alias vim "C:\Program Files (x86)\Vim\vim74\vim.exe"
@@ -20,17 +25,19 @@ Set-Alias gvim "C:\Program Files (x86)\Vim\vim74\gvim.exe"
 switch ($env:ComputerName)
 {
   "JJACO-01797" {
-    write-host "Custom variables for $env:ComputerName found."
+    write-host "Custom variables for $env:ComputerName loaded."
     $WORK="K:\common\Szabolcs_Pasztor\Programming"
-    $DOTFILES="$WORK\Github\Dot-files"
   }
   default {
-    write-host "Custom variables for $env:ComputerName was not found. Please configure."
-    exit 1
+    write-host @"
+WARNING: $env:ComputerName is not registered. Please add $env:ComputerName to configuration.
+"@
   }
 }
-$PSCONFIG_DIR="$HOME\Documents\WindowsPowershell"
-$MODULES="$PSCONFIG_DIR\Modules"
+if ($WORK -eq "") {$WORK = $HOME}
+$DOTFILES = "$WORK\Github\Dot-files"
+$PSCONFIG_DIR = "$HOME\Documents\WindowsPowershell"
+$MODULES = "$PSCONFIG_DIR\Modules"
 
 # Script for longer history in shell:
 $HistoryFilePath = Join-Path ([Environment]::GetFolderPath('UserProfile')) .ps_history
@@ -46,32 +53,46 @@ Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 # ------------------------------------------------------------------
 
 # Strange magical environment variables to get vim working properly.
+# If vim not installed,
+# Install vim.
+# Else:
 $env:vim = "C:\Program Files (x86)\Vim\vim74"
 $env:gvim = "C:\Program Files (x86)\Vim\vim74"
-write-host "Set Vim Environment Variables."
+write-host "Vim Environment Loaded."
 
 # To get git loading properly, be sure to follow instructions here:
 # http://learnaholic.me/2012/10/12/make-powershell-and-git-suck-less-on-windows/
 
-# For getting posh-git & ssh-agent to work:
-# If module not installed
-# Then install module
-# After installation:
-$env:path += ";" + (Get-Item "Env:ProgramFiles(x86)").Value + "\Git\bin"
+# Configuration for PSGET:
+# -----------------------------------------------
+If ((Get-Module -ListAvailable -name psget) -eq "")
+{
+  (new-object Net.WebClient).DownloadString("http://psget.net/GetPsGet.ps1") | iex
+  write-host "PsGet now installed. Loading Plugins:"
+}
+else {write-host "Module PsGet is already installed. Loading Plugins:"}
 
-# Load posh-git example profile:
+# For getting posh-git & ssh-agent to work:
+# -----------------------------------------------
+If ((Get-PSGetModuleInfo posh-git) -eq "") {install-module posh-git}
+else {write-host "`t- posh-git found. Loading Settings..."}
+
+$env:path += ";" + (Get-Item "Env:ProgramFiles(x86)").Value + "\Git\bin"
 . "$MODULES\posh-git\profile.example.ps1"
-write-host "posh-git loaded"
 
 # Load Jump-Location profile
-# If module not installed
-# Then install module
-# After installation:
+# -----------------------------------------------
+If ((Get-PSGetModuleInfo posh-git) -eq "") {install-module jump.location}
+else {write-host "`t- jump.location found. Loading Settings..."}
+
 Import-Module "$MODULES\Jump.Location\Jump.Location.psd1"
-write-host "Jump.Location loaded"
 
 # Last line of configuration:
-write-host "`nProfile loaded."
+write-host @'
+-----------------------------------------------------------
+Success! Profile has been loaded.
+-----------------------------------------------------------
+'@
 # -------------------------------------------------------------------
 # Profile editing functions:
 # -------------------------------------------------------------------
