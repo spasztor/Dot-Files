@@ -8,25 +8,16 @@ switch ($env:ComputerName)
   "JJACO-01797" {
     write-host "Profile for $env:ComputerName found."
     $WORK="K:\common\Szabolcs_Pasztor\Programming"
+    $DOTFILES="$WORK\Github\Dot-files"
   }
-  default {}
-}
-# For editing your PowerShell profile
-Function Edit-Profile
-{
-    vim $profile
+  default {
+  write-host "Profile for $env:ComputerName was not found. Please configure for specific settings."
+  }
 }
 
-# For editing your Vim settings
-Function Edit-Vimrc
-{
-    vim ~/.vimrc
-}
-# For creating symbolic links
-Function mklink
-{
-  runas /noprofile /user:Administrator cmd /c mklink $args
-}
+# -------------------------------------------------------------------
+# Powershell Plugins:
+# ------------------------------------------------------------------
 
 # Strange magical environment variables to get vim working properly.
 $env:vim = "C:\Program Files (x86)\Vim\vim74"
@@ -37,9 +28,10 @@ $env:gvim = "C:\Program Files (x86)\Vim\vim74"
 
 # For getting posh-git & ssh-agent to work:
 $env:path += ";" + (Get-Item "Env:ProgramFiles(x86)").Value + "\Git\bin"
+$MODULES="$HOME\Documents\WindowsPowershell\Modules"
 
 # Load posh-git example profile:
-. "$HOME\Documents\WindowsPowerShell\Modules\posh-git\profile.example.ps1"
+. "$MODULES\posh-git\profile.example.ps1"
 
 # Script for longer history in shell:
 $HistoryFilePath = Join-Path ([Environment]::GetFolderPath('UserProfile')) .ps_history
@@ -49,3 +41,49 @@ if (Test-path $HistoryFilePath) { Import-Clixml $HistoryFilePath | Add-History }
 # if you don't already have this configured...
 Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
+
+# Load Jump-Location profile
+Import-Module "$MODULES\Jump.Location\Jump.Location.psd1"
+
+# -------------------------------------------------------------------
+# Profile editing functions:
+# -------------------------------------------------------------------
+
+# For updating Dot-Files
+Function Update-DotFiles
+{
+    write-host "Updating Powershell Dot-Files...`n"
+    python "$DOTFILES\update.py"
+    . $PROFILE
+    write-host "`nDot-Files Updated."
+}
+
+# For updating Dot-Files repo
+Function Update-DotFilesRepo
+{
+  pushd $DOTFILES
+  git add -A
+  git commit -m "Automated push."
+  git push
+  pulld
+}
+# For editing your PowerShell profile
+Function Edit-Profile
+{
+    vim "$DOTFILES\powershell\Microsoft.PowerShell_profile.ps1"
+    # Update-DotFilesRepo
+    Update-Dotfiles
+}
+
+# For editing your Vim settings
+Function Edit-Vimrc
+{
+    vim "$DOTFILES\vim\.vimrc"
+    # Update-DotFilesRepo
+    Update-Dotfiles
+}
+# For creating symbolic links
+Function mklink
+{
+  runas /noprofile /user:Administrator cmd /c mklink $args
+}
