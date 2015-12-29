@@ -86,7 +86,7 @@ Function Update-DotFilesRepo
 
 Function Test-Foo
 {
-  write-host "It worked!"
+  write-host "It worked the second time!"
 }
 # For editing your PowerShell profile
 Function Edit-Profile
