@@ -50,21 +50,6 @@ Import-Module "$MODULES\Jump.Location\Jump.Location.psd1"
 # Profile editing functions:
 # -------------------------------------------------------------------
 
-# For reloading profile (from http://stackoverflow.com/a/5501909)
-Function Reload-Profile {
-      @(
-        $Profile.AllUsersAllHosts,
-        $Profile.AllUsersCurrentHost,
-        $Profile.CurrentUserAllHosts,
-        $Profile.CurrentUserCurrentHost
-      ) | % {
-          if(Test-Path $_){
-              Write-Verbose "Running $_"
-              . $_
-          }
-      }
-}
-
 # For updating Dot-Files
 Function Update-DotFiles
 {
@@ -76,11 +61,14 @@ Function Update-DotFiles
 # For updating Dot-Files repo
 Function Update-DotFilesRepo
 {
-  pushd $DOTFILES
-  git add -A
-  git commit -m "Automated push."
-  git push
-  popd
+  $repo_update = Read-Host "Update dot-files github repo? (y/n): "
+  if ($repo_update = "y") {
+    pushd $DOTFILES
+    git add -A
+    git commit -m "Automated push."
+    git push
+    popd
+  }
 }
 
 Function Test-Foo
@@ -93,7 +81,7 @@ Function Edit-Profile
     vim "$DOTFILES\powershell\Microsoft.PowerShell_profile.ps1"
     Update-DotFilesRepo
     Update-Dotfiles
-    write-host "Profile edit succesful. Please run Reload-Profile."
+    write-host "Profile edit successful. Please reload profile."
 }
 
 # For editing your Vim settings
