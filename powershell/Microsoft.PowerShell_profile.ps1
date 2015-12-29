@@ -95,7 +95,6 @@ Function Edit-Profile
     Update-DotFilesRepo
     Update-Dotfiles
     Reload-Profile
-    #."$PSCONFIG_DIR\Microsoft.Powershell_profile.ps1"
 }
 
 # For editing your Vim settings
