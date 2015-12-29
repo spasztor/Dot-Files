@@ -1,3 +1,17 @@
+<#
+.SYNOPSIS
+  Powershell Profile
+.DESCRIPTION
+  Another Powershell profile that sets a bunch of stuff.
+.NOTES
+  Author  : Szabolcs Pasztor - szabolcs1992@gmail.com
+.LINK
+  https://github.com/spasztor/Dot-Files
+#>
+
+# First line of configuration:
+write-host "`nLoading profile..."
+
 # Aliases for vim.
 Set-Alias vim "C:\Program Files (x86)\Vim\vim74\vim.exe"
 Set-Alias gvim "C:\Program Files (x86)\Vim\vim74\gvim.exe"
@@ -6,33 +20,17 @@ Set-Alias gvim "C:\Program Files (x86)\Vim\vim74\gvim.exe"
 switch ($env:ComputerName)
 {
   "JJACO-01797" {
-    write-host "Profile for $env:ComputerName found."
+    write-host "Custom variables for $env:ComputerName found."
     $WORK="K:\common\Szabolcs_Pasztor\Programming"
     $DOTFILES="$WORK\Github\Dot-files"
   }
   default {
-  write-host "Profile for $env:ComputerName was not found. Please configure for specific settings."
+    write-host "Custom variables for $env:ComputerName was not found. Please configure."
+    exit 1
   }
 }
 $PSCONFIG_DIR="$HOME\Documents\WindowsPowershell"
 $MODULES="$PSCONFIG_DIR\Modules"
-
-# -------------------------------------------------------------------
-# Powershell Plugins:
-# ------------------------------------------------------------------
-
-# Strange magical environment variables to get vim working properly.
-$env:vim = "C:\Program Files (x86)\Vim\vim74"
-$env:gvim = "C:\Program Files (x86)\Vim\vim74"
-
-# To get git loading properly, be sure to follow instructions here:
-# http://learnaholic.me/2012/10/12/make-powershell-and-git-suck-less-on-windows/
-
-# For getting posh-git & ssh-agent to work:
-$env:path += ";" + (Get-Item "Env:ProgramFiles(x86)").Value + "\Git\bin"
-
-# Load posh-git example profile:
-. "$MODULES\posh-git\profile.example.ps1"
 
 # Script for longer history in shell:
 $HistoryFilePath = Join-Path ([Environment]::GetFolderPath('UserProfile')) .ps_history
@@ -43,9 +41,37 @@ if (Test-path $HistoryFilePath) { Import-Clixml $HistoryFilePath | Add-History }
 Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 
-# Load Jump-Location profile
-Import-Module "$MODULES\Jump.Location\Jump.Location.psd1"
+# -------------------------------------------------------------------
+# Powershell Plugins:
+# ------------------------------------------------------------------
 
+# Strange magical environment variables to get vim working properly.
+$env:vim = "C:\Program Files (x86)\Vim\vim74"
+$env:gvim = "C:\Program Files (x86)\Vim\vim74"
+write-host "Set Vim Environment Variables."
+
+# To get git loading properly, be sure to follow instructions here:
+# http://learnaholic.me/2012/10/12/make-powershell-and-git-suck-less-on-windows/
+
+# For getting posh-git & ssh-agent to work:
+# If module not installed
+# Then install module
+# After installation:
+$env:path += ";" + (Get-Item "Env:ProgramFiles(x86)").Value + "\Git\bin"
+
+# Load posh-git example profile:
+. "$MODULES\posh-git\profile.example.ps1"
+write-host "posh-git loaded"
+
+# Load Jump-Location profile
+# If module not installed
+# Then install module
+# After installation:
+Import-Module "$MODULES\Jump.Location\Jump.Location.psd1"
+write-host "Jump.Location loaded"
+
+# Last line of configuration:
+write-host "`nProfile loaded."
 # -------------------------------------------------------------------
 # Profile editing functions:
 # -------------------------------------------------------------------
@@ -53,7 +79,7 @@ Import-Module "$MODULES\Jump.Location\Jump.Location.psd1"
 # For updating Dot-Files
 Function Update-DotFiles
 {
-    write-host "Updating Powershell Dot-Files..."
+    write-host "Updating Dot-Files..."
     python "$DOTFILES\update.py"
 }
 
@@ -65,7 +91,7 @@ Function Update-DotFilesRepo($message = "Automatic update from PS script.")
     git add -A
     if ((Read-Host "Use default message? (y/n)") -eq "n")
     {
-      $message = read-host "Message: "
+      $message = read-host "Enter message for commit"
     }
     git commit -m $message
     git push
