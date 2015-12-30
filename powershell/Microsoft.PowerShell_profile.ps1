@@ -74,12 +74,18 @@ If (-not(Get-Module -ListAvailable -name psget))
 {
   (new-object Net.WebClient).DownloadString("http://psget.net/GetPsGet.ps1") | iex
   write-host "PsGet now installed. Loading Plugins:"
+  write-host "Please restart shell environmeht"
 }
 else {write-host "Module PsGet is already installed. Loading Plugins:"}
 
 # For getting posh-git & ssh-agent to work:
 # -----------------------------------------------
-If (-not(Get-Module posh-git)) {install-module posh-git}
+If (-not(test-path "$MODULES\posh-git"))
+{
+  write-host "`t- posh-git not found. Installing..."
+  install-module posh-git
+  write-host "Please restart shell environmeht"
+}
 else {write-host "`t- posh-git found. Loading Settings..."}
 
 $env:path += ";" + (Get-Item "Env:ProgramFiles(x86)").Value + "\Git\bin"
@@ -87,7 +93,11 @@ $env:path += ";" + (Get-Item "Env:ProgramFiles(x86)").Value + "\Git\bin"
 
 # Load Jump-Location profile
 # -----------------------------------------------
-If (-not(Get-Module jump.location)) {install-module jump.location}
+If (-not(test-path "$MODULES\jump.location"))
+{
+  write-host "`t- jump.location not found. Installing..."
+  install-module jump.location
+}
 else {write-host "`t- jump.location found. Loading Settings..."}
 
 Import-Module "$MODULES\Jump.Location\Jump.Location.psd1"
