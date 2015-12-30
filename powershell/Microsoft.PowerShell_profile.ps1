@@ -27,15 +27,20 @@ switch ($env:ComputerName)
   "JJACO-01797" {
     write-host "Custom variables for $env:ComputerName loaded."
     $WORK="K:\common\Szabolcs_Pasztor\Programming"
+    $DOTFILES = "$WORK\Github\Dot-files"
   }
   default {
     write-host @"
 WARNING: $env:ComputerName is not registered. Please add $env:ComputerName to configuration.
 "@
+    $WORK = ""
   }
 }
-if ($WORK -eq "") {$WORK = $HOME}
-$DOTFILES = "$WORK\Github\Dot-files"
+if ($WORK -eq "")
+{
+    $WORK = $HOME
+    $DOTFILES = "$WORK\git\Dot-files"
+}
 $PSCONFIG_DIR = "$HOME\Documents\WindowsPowershell"
 $MODULES = "$PSCONFIG_DIR\Modules"
 
@@ -65,7 +70,7 @@ write-host "Vim Environment Loaded."
 
 # Configuration for PSGET:
 # -----------------------------------------------
-If ((Get-Module -ListAvailable -name psget) -eq "")
+If (-not(Get-Module -ListAvailable -name psget))
 {
   (new-object Net.WebClient).DownloadString("http://psget.net/GetPsGet.ps1") | iex
   write-host "PsGet now installed. Loading Plugins:"
@@ -74,7 +79,7 @@ else {write-host "Module PsGet is already installed. Loading Plugins:"}
 
 # For getting posh-git & ssh-agent to work:
 # -----------------------------------------------
-If ((Get-PSGetModuleInfo posh-git) -eq "") {install-module posh-git}
+If (-not(Get-Module posh-git)) {install-module posh-git}
 else {write-host "`t- posh-git found. Loading Settings..."}
 
 $env:path += ";" + (Get-Item "Env:ProgramFiles(x86)").Value + "\Git\bin"
@@ -82,7 +87,7 @@ $env:path += ";" + (Get-Item "Env:ProgramFiles(x86)").Value + "\Git\bin"
 
 # Load Jump-Location profile
 # -----------------------------------------------
-If ((Get-PSGetModuleInfo posh-git) -eq "") {install-module jump.location}
+If (-not(Get-Module jump.location)) {install-module jump.location}
 else {write-host "`t- jump.location found. Loading Settings..."}
 
 Import-Module "$MODULES\Jump.Location\Jump.Location.psd1"
