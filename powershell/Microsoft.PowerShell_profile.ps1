@@ -30,8 +30,8 @@ switch ($env:ComputerName)
     $DOTFILES = "$WORK\Github\Dot-files"
   }
   default {
-    write-host @"
-WARNING: $env:ComputerName is not registered. Please add $env:ComputerName to configuration.
+    write-warning @"
+$env:ComputerName is not registered. Please add $env:ComputerName to configuration.
 "@
     $WORK = ""
   }
@@ -44,6 +44,8 @@ if ($WORK -eq "")
 $PSCONFIG_DIR = "$HOME\Documents\WindowsPowershell"
 $MODULES = "$PSCONFIG_DIR\Modules"
 
+# Go to Work
+pushd $WORK
 # Script for longer history in shell:
 $HistoryFilePath = Join-Path ([Environment]::GetFolderPath('UserProfile')) .ps_history
 Register-EngineEvent PowerShell.Exiting -Action { Get-History | Export-Clixml $HistoryFilePath } | out-null
@@ -52,6 +54,26 @@ if (Test-path $HistoryFilePath) { Import-Clixml $HistoryFilePath | Add-History }
 # if you don't already have this configured...
 Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
+
+# Layout of shell environment:
+$host.UI.RawUI.BackgroundColor = "DarkBlue"
+$host.UI.RawUI.ForegroundColor = "Gray"
+$host.PrivateData.VerboseBackgroundColor = "DarkMagenta"
+$host.PrivateData.VerboseForegroundColor = "Green"
+$host.PrivateData.WarningBackgroundColor = "DarkMagenta"
+$host.PrivateData.WarningForegroundColor = "Yellow"
+$host.PrivateData.ErrorBackgroundColor = "DarkMagenta"
+$host.PrivateData.ErrorForegroundColor = "Red"
+
+$SIZE = $host.UI.RawUI.WindowSize
+$SIZE.width = 120
+$SIZE.height = 60
+$host.UI.RawUI.WindowSize = $SIZE
+
+$BUFFER = $host.UI.RawUI.BufferSize
+$BUFFER.width = 120
+$BUFFER.height = 2000
+$host.UI.RawUI.BufferSize = $BUFFER
 
 # -------------------------------------------------------------------
 # Powershell Plugins:
@@ -74,7 +96,7 @@ If (-not(Get-Module -ListAvailable -name psget))
 {
   (new-object Net.WebClient).DownloadString("http://psget.net/GetPsGet.ps1") | iex
   write-host "PsGet now installed. Loading Plugins:"
-  write-host "Please restart shell environmeht"
+  write-warning "Please restart shell environment"
 }
 else {write-host "Module PsGet is already installed. Loading Plugins:"}
 
@@ -84,7 +106,7 @@ If (-not(test-path "$MODULES\posh-git"))
 {
   write-host "`t- posh-git not found. Installing..."
   install-module posh-git
-  write-host "Please restart shell environmeht"
+  write-warning "Please restart shell environment"
 }
 else {write-host "`t- posh-git found. Loading Settings..."}
 
@@ -170,4 +192,5 @@ Function Restart-sshagent
 {
   stop-sshagent
   start-sshagent
+  write-host "SSH Agent Restarted."
 }
