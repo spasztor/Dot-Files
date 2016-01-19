@@ -119,10 +119,10 @@ nnoremap <leader><space> :nohlsearch<CR>
 nnoremap <silent> <C-l> :nohl<CR><C-l>
 
 " Help:
-if s:running_windows 
-    helptags $home/vimfiles/doc
+if s:running_windows
+    helptags $HOME\vimfiles\doc
 else
-    helptags ~/.vim/doc
+    helptags ~\.vim\doc
 endif
 
 map <leader>hh :he <C-R><C-W><CR>
