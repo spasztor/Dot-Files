@@ -3,7 +3,6 @@
 " -------------
 
 let s:running_windows = has("win16") || has("win32") || has("win64") " Define windows version
-
 " If your paths are fucked (for windows) include this:
 "if s:running_windows
 "    let $GVIM='C:/Program Files (x86)/Vim/'
@@ -14,7 +13,7 @@ let s:running_windows = has("win16") || has("win32") || has("win64") " Define wi
 " Following is hack to get powershell working
 " From: http://stackoverflow.com/questions/94382/vim-with-powershell
 
-if s:running_windows 
+if s:running_windows
     set shell=cmd.exe
     set shellcmdflag=/c\ powershell.exe\ -NoLogo\ -NoProfile\ -NonInteractive\ -ExecutionPolicy\ RemoteSigned
     set shellpipe=|
@@ -61,6 +60,28 @@ let g:rainbow_conf = {
 \   }
 \}
 
+" Vundle
+set nocompatible
+filetype off
+
+" set the runtime path to include Vundle and initialize
+if s:running_windows
+    set runtimepath +=$HOME/vimfiles/bundle/Vundle.vim/
+    call vundle#begin('$HOME/vimfiles/bundle/')
+else
+    set runtimepath =~/.vim/bundle/Vundle.vim
+    call vundle#begin()
+endif
+
+"" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'vim-scripts/indentpython.vim'
+Bundle 'Valloric/YouCompleteMe'
+
+" Keep Plugin commands between vundle#begin/end.
+"" All of your Plugins must be added before the following line
+call vundle#end()
+filetype plugin indent on
 " -------------
 " Vim Settings:
 " -------------
@@ -81,14 +102,22 @@ hi clear SpellBad
 hi SpellBad cterm=bold
 
 " Spaces and Tabs:
-set shiftwidth=4
-set tabstop=4
 set expandtab
 set list " Show tabs to not ever have them
 set nojoinspaces " Disable double spaces on Join
 set backspace=2 " Make backspace behave nicely.
 set backspace=indent,eol,start " Force it to work on these characters.
-"
+
+" LISP
+au BufNewFile,BufRead *.lsp set shiftwidth=2
+au BufNewFile,BufRead *.lsp set tabstop=2
+
+" Python
+au BufNewFile,BufRead *.py set shiftwidth=4
+au BufNewFile,BufRead *.py set tabstop=4
+au BufNewFile,BufRead *.py set softtabstop=4
+au BufNewFile,BufRead *.py set textwidth=79
+
 " UI Config
 "Set whitespace chars
 set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
