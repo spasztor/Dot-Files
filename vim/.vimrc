@@ -81,8 +81,8 @@ hi clear SpellBad
 hi SpellBad cterm=bold
 
 " Spaces and Tabs:
-set shiftwidth=2
-set tabstop=2
+set shiftwidth=4
+set tabstop=4
 set expandtab
 set list " Show tabs to not ever have them
 set nojoinspaces " Disable double spaces on Join
