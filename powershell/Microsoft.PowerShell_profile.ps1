@@ -17,7 +17,7 @@ By: Szabolcs Pasztor, <szabolcs1992@gmail.com>
 -----------------------------------------------------------
 '@
 
-# Aliases for vim.
+# Aliases.
 Set-Alias vim "C:\Program Files (x86)\Vim\vim74\vim.exe"
 Set-Alias gvim "C:\Program Files (x86)\Vim\vim74\gvim.exe"
 

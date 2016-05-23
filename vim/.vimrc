@@ -3,7 +3,6 @@
 " -------------
 
 let s:running_windows = has("win16") || has("win32") || has("win64") " Define windows version
-
 " If your paths are fucked (for windows) include this:
 "if s:running_windows
 "    let $GVIM='C:/Program Files (x86)/Vim/'
@@ -14,7 +13,7 @@ let s:running_windows = has("win16") || has("win32") || has("win64") " Define wi
 " Following is hack to get powershell working
 " From: http://stackoverflow.com/questions/94382/vim-with-powershell
 
-if s:running_windows 
+if s:running_windows
     set shell=cmd.exe
     set shellcmdflag=/c\ powershell.exe\ -NoLogo\ -NoProfile\ -NonInteractive\ -ExecutionPolicy\ RemoteSigned
     set shellpipe=|
@@ -36,31 +35,52 @@ endif
 " -------------
 
 " Rainbow Plugin:
-let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
-let g:lisp_rainbow = 1
-let g:rainbow_conf = {
-\   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
-\   'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
-\   'operators': '_,_',
-\   'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
-\   'separately': {
-\       '*': {},
-\       'tex': {
-\           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
-\       },
-\       'lisp': {
-\           'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
-\       },
-\       'vim': {
-\           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
-\       },
-\       'html': {
-\           'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
-\       },
-\       'css': 0,
-\   }
-\}
+"let g:rainbow_active = 0 "0 if you want to enable it later via :RainbowToggle
+"let g:rainbow_conf = {
+"\   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+"\   'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+"\   'operators': '_,_',
+"\   'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+"\   'separately': {
+"\       '*': {},
+"\       'tex': {
+"\           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+"\       },
+"\       'lisp': {
+"\           'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+"\       },
+"\       'vim': {
+"\           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+"\       },
+"\       'html': {
+"\           'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+"\       },
+"\       'css': 0,
+"\   }
+"\}
+"
+" Vundle
+set nocompatible
+filetype off
 
+" set the runtime path to include Vundle and initialize
+if s:running_windows
+    set runtimepath +=$HOME/vimfiles/bundle/Vundle.vim/
+    call vundle#begin('$HOME/vimfiles/bundle/')
+else
+    set runtimepath +=~/.vim/bundle/Vundle.vim
+    call vundle#begin()
+endif
+
+"" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'vim-scripts/indentpython.vim'
+Bundle 'Valloric/YouCompleteMe'
+
+" Keep Plugin commands between vundle#begin/end.
+"" All of your Plugins must be added before the following line
+call vundle#end()
+filetype plugin indent on
 " -------------
 " Vim Settings:
 " -------------
@@ -81,14 +101,23 @@ hi clear SpellBad
 hi SpellBad cterm=bold
 
 " Spaces and Tabs:
-set shiftwidth=2
-set tabstop=2
 set expandtab
 set list " Show tabs to not ever have them
 set nojoinspaces " Disable double spaces on Join
 set backspace=2 " Make backspace behave nicely.
 set backspace=indent,eol,start " Force it to work on these characters.
-"
+
+" LISP
+au BufNewFile,BufRead *.lsp set shiftwidth=2
+au BufNewFile,BufRead *.lsp set tabstop=2
+au BufNewFile,BufRead *.lsp set RainbowActive
+
+" Python
+au BufNewFile,BufRead *.py set shiftwidth=4
+au BufNewFile,BufRead *.py set tabstop=4
+au BufNewFile,BufRead *.py set softtabstop=4
+au BufNewFile,BufRead *.py set textwidth=79
+
 " UI Config
 "Set whitespace chars
 set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
@@ -119,8 +148,8 @@ nnoremap <leader><space> :nohlsearch<CR>
 nnoremap <silent> <C-l> :nohl<CR><C-l>
 
 " Help:
-if s:running_windows 
-    helptags $home/vimfiles/doc
+if s:running_windows
+    helptags $HOME\vimfiles\doc
 else
     helptags ~/.vim/doc
 endif
